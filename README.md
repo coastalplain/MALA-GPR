@@ -1,5 +1,5 @@
 # MALA-GPR
-<H1>MALA GPR Coordinate File to Shapefile (R script)</H1>
+<H2>MALA GPR Coordinate File to Shapefile (R script)</H2>
 MALA GPR systems collect great data and integrate a GPS signal with the data if you desire.  Often the GPS elevation is not to standard (unless you are using an RTK), and attaching a good Lidar elevation from a TIF or other dataset is desirable.  
 
 The initial MALA-GPR project focuses on creating ArcGIS shapefiles (maybe file geodatabases in the future?) from the COR file created with the GPR, using that shapefile to extract lidar elevation data from the point, and push that back to the original COR file where the position and elevation data are kept.   Future work may involve reading and processing the actual GPR radargram, but that is currently beyond my capabilities.  Please add on!
@@ -17,12 +17,12 @@ The initial MALA-GPR project focuses on creating ArcGIS shapefiles (maybe file g
       ....at least the ones I know of..there may be others
       
 
-<b>Complete</b>
+<b>Complete</b></br>
 1.  DAT_nnnn.cor file to shapefile is complete.
       The script searches all directory structures below your set work directory setwd() and creates a shapefile for each .cor file found in the same location as the .cor file.
       At the end of the script, it produces a shapefile will all of the files processed in that run
 
-<b>Next Steps</b>
+<b>Next Steps</b></br>
 2. Extract good elevation data from GeoTIFF
     a.  pull the latitude,longitude pairs from the corData (if using R only) or the shapefile (if in ArcGIS py)
     b.  convert the WGS-1984 projection to the projection of the dataset (set variable at top of file)
