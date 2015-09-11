@@ -16,7 +16,7 @@ setwd(parent.folder)
 
 ##Obtain the list of all COR files in the directories and sub-directories
 ##  in preparation for the loop to create all shapefiles from the COR files
-fileList.full <- dir(pattern=".cor", recursive = TRUE, include.dirs=TRUE)
+fileList.full <- dir(pattern=".cor$", recursive = TRUE, include.dirs=TRUE)
        #summary(fileList)  ##shows the Length Class and Mode of the dataframe
        #head(fileList)  ##shows the first few rows of the dataframe
        #fileList[12]  ##brings out element 12 in the file list
