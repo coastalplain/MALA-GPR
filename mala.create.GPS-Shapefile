@@ -1,29 +1,35 @@
+##
+## The script below is meant to be run in R
+## Currently, it is being tested on a 32-bit Windows installation
+## M. Scott Harris, Ph.D.  ScottHarris2007-gmail
+##
+
 ##Set your parent (upper level) GPR directory
 #parent.folder = "Z:/BigProjectData/GPR_Data/20080802_MtPleasant_MSH" 
 parent.folder = "G:/Data/GPR/20080804_JamesIs_MSH/250mHz"
 
 setwd(parent.folder)
+mala.cor.filename <- "DAT_0038.cor"
 
 ##http://stackoverflow.com/questions/30127293/how-to-convert-csv-to-shp-in-r
 ##This code was pulled from @iembry off the above weblink and modified
 
-##install.packages(c("rgdal", "sp"))
+#install.packages(c("rgdal", "sp"))
 library(rgdal)
 library(sp)
 
-MyData <- read.table(file="G:/Data/GPR/20080804_JamesIs_MSH/250mHz/DAT_0035.cor", header=FALSE,sep="\t")
-
+#MyData <- read.table(file="G:/Data/GPR/20080804_JamesIs_MSH/250mHz/DAT_0038.cor", header=FALSE,sep="\t")
+MyData <- read.table(file=mala.cor.filename, header=FALSE,sep="\t")
 class(MyData)
 
-#Add the header information
+##Add the header information
 names(MyData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","lon-EW","elevation","M","GPS-dop")
 
 
-#Multiply the Longitude Column by -1 to get into correct hemisphere
+##Multiply the Longitude Column by -1 to get into correct hemisphere
 MyData$longitude <- MyData$longitude * -1
 
+##create a spatial class and export to a shapefile
 coordinates(MyData)<-~longitude+latitude
-
-class(MyData)
-#
-writeOGR(MyData, "G:/Data/GPR/20080804_JamesIs_MSH", "pt_DAT_0035", driver = "ESRI Shapefile")
+class(MyData)  #check to see that indeed a spatial file was produced
+writeOGR(MyData, "G:/Data/GPR/20080804_JamesIs_MSH", "pt_DAT_0038", driver = "ESRI Shapefile")
