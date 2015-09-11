@@ -10,8 +10,6 @@ library(sp)
 library(maptools)  #to utilize rgeos gUnion command later
 
 ##Set your parent (upper level) GPR directory
-###### Eventually, this setting should be the only one needed due to a loop to create all the shapefiles
-#parent.folder = "Z:/BigProjectData/GPR_Data/20080802_MtPleasant_MSH" 
 parent.folder = "G:/Data/GPR/20080804_JamesIs_MSH/250mHz"
 setwd(parent.folder)
 
@@ -37,35 +35,39 @@ mala.cor.fullpath <- paste(getwd(),"/",mala.cor.path,"/", sep="", collapse=NULL)
 mala.cor.shapefile <- paste("pt_",mala.cor.filename, sep="", collapse=NULL)
 
 ##http://stackoverflow.com/questions/30127293/how-to-convert-csv-to-shp-in-r
-##some of the code was pulled from @iembry off the above weblink and modified
+##some code was pulled from @iembry off the above weblink and modified
 
-#MyData <- read.table(file="G:/Data/GPR/20080804_JamesIs_MSH/250mHz/DAT_0038.cor", header=FALSE,sep="\t")
 corData <- read.table(file=mala.cor.working, header=FALSE,sep="\t")
-class(corData)
-
+class(corData)  #just shows that the data are in a data.frame
 
 ##Add the header information
-names(corData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","lon-EW","elevation","M","GPS-dop")
 corData$filepath <- mala.cor.fullpath
 corData$filename <- mala.cor.filename
+names(corData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","lon-EW","elevation","M","GPS-dop","filepath","filename")
 
 ##Multiply the Longitude Column by -1 to get into correct hemisphere
 corData$longitude <- corData$longitude * -1
 
+#making a large dataframe of all processed data, then convert to a shapefile
+if (i == 1) {
+corDataAll <- corData
+} else {
+#build a large dataframe with all datapoints to be changed to a shapefile in last step
+corDataAll <- rbind(corDataAll, corData)
+}
 ##create a spatial class and export to a shapefile
 coordinates(corData)<-~longitude+latitude
 class(corData)  #check to see that indeed a spatial file was produced
 writeOGR(corData, mala.cor.path, mala.cor.shapefile, driver = "ESRI Shapefile")
 
-#making a large shapefile of all processed data
-if (i=1) {
-primaryShapefile <- paste("ptGPR_",startTime, sep="", collapse=NULL)
-writeOGR(corData, getwd(), primaryShapefile, driver = "ESRI Shapefile")
-}
-if (i > 1 {
-#Union the current mala.cor.path, mala.cor.shapefile to the ptGPR_shapefile
-#check for library(devtools) install_git from taRifx.geo.git and library(taRifx.geo)
-}
+}  #end of for loop
 
+##Write out the final Shapefile with all files processed
 
-}  #end of script
+coordinates(corDataAll)<-~longitude+latitude
+class(corDataAll)
+mala.cor.shapefile.all <- paste("ptGPRall_",startTime, sep="", collapse=NULL)
+writeOGR(corDataAll, getwd(), mala.cor.shapefile.all, driver = "ESRI Shapefile")
+
+#end of script
+
