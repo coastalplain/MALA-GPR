@@ -5,7 +5,7 @@ MALA GPR systems collect great data and integrate a GPS signal with the data if 
 The initial MALA-GPR project focuses on creating ArcGIS shapefiles (maybe file geodatabases in the future?) from the COR file created with the GPR, using that shapefile to extract lidar elevation data from the point, and push that back to the original COR file where the position and elevation data are kept.   Future work may involve reading and processing the actual GPR radargram, but that is currently beyond my capabilities.  Please add on!
 
 <h2>Libraries and packages to install</h2>
-      <i>abind
+      abind
       gdalUtils
       maptools
       marmap (not really)
@@ -13,7 +13,7 @@ The initial MALA-GPR project focuses on creating ArcGIS shapefiles (maybe file g
       rgdal
       rgeos
       shapefiles
-      sp</i>
+      sp<
       ....at least the ones I know of..there may be others
       
 
