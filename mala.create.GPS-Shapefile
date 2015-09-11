@@ -16,14 +16,13 @@ setwd(parent.folder)
 ##Obtain the list of all COR files in the directories and sub-directories
 ##  in preparation for the loop to create all shapefiles from the COR files
 fileList <- dir(pattern=".cor", recursive = TRUE, include.dirs=TRUE)
-  #summary(fileList)  ##shows the Length Class and Mode of the dataframe
-  #head(fileList)  ##shows the first few rows of the dataframe
-  #fileList[12]  ##brings out element 12 in the file list
+       #summary(fileList)  ##shows the Length Class and Mode of the dataframe
+       #head(fileList)  ##shows the first few rows of the dataframe
+       #fileList[12]  ##brings out element 12 in the file list
 fileCount <- NROW(fileList)  #how many files will need to be processed, use as counter
 startTime <- format(Sys.time(), format="%Y%m%d%H%M%S")
 
 ## Begin Loop for each COR file
-##
 
 for (i in 1:length(fileList)) {
 
@@ -49,18 +48,19 @@ names(corData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","l
 ##Multiply the Longitude Column by -1 to get into correct hemisphere
 corData$longitude <- corData$longitude * -1
 
-#making a large dataframe of all processed data, then convert to a shapefile
+##making a large dataframe of all processed data, then convert to a shapefile
+
 if (i == 1) {
 corDataAll <- corData
 } else {
 #build a large dataframe with all datapoints to be changed to a shapefile in last step
 corDataAll <- rbind(corDataAll, corData)
 }
+
 ##create a spatial class and export to a shapefile
 coordinates(corData)<-~longitude+latitude
 class(corData)  #check to see that indeed a spatial file was produced
 writeOGR(corData, mala.cor.path, mala.cor.shapefile, driver = "ESRI Shapefile")
-
 }  #end of for loop
 
 ##Write out the final Shapefile with all files processed
@@ -70,5 +70,5 @@ class(corDataAll)
 mala.cor.shapefile.all <- paste("ptGPRall_",startTime, sep="", collapse=NULL)
 writeOGR(corDataAll, getwd(), mala.cor.shapefile.all, driver = "ESRI Shapefile")
 
-#end of script
+#end of R script
 
