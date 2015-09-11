@@ -10,17 +10,25 @@ library(sp)
 library(maptools)  #to utilize rgeos gUnion command later
 
 ##Set your parent (upper level) GPR directory
-parent.folder = "G:/Data/GPR/20080804_JamesIs_MSH/250mHz"
+parent.folder = "//cainhoy/data/BigProjectData/GPR_Data/_Process01"  #example if you use a network share
+##parent.folder = "G:/Data/GPR/20080804_JamesIs_MSH/250mHz"
 setwd(parent.folder)
 
 ##Obtain the list of all COR files in the directories and sub-directories
 ##  in preparation for the loop to create all shapefiles from the COR files
-fileList <- dir(pattern=".cor", recursive = TRUE, include.dirs=TRUE)
+fileList.full <- dir(pattern=".cor", recursive = TRUE, include.dirs=TRUE)
        #summary(fileList)  ##shows the Length Class and Mode of the dataframe
        #head(fileList)  ##shows the first few rows of the dataframe
        #fileList[12]  ##brings out element 12 in the file list
-fileCount <- NROW(fileList)  #how many files will need to be processed, use as counter
+fileCount <- NROW(fileList.full)  #how many files will need to be processed, use as counter
 startTime <- format(Sys.time(), format="%Y%m%d%H%M%S")
+fileList <- vector()
+
+##Filter out files that have 0 size (aka no GPS coords) file.info(fileList[i])$size = 0
+for (i in 1:length(fileList.full)) {
+if (file.info(fileList.full[i])$size >0)
+fileList <- c(fileList, fileList.full[i])
+}
 
 ## Begin Loop for each COR file
 
