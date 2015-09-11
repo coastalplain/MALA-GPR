@@ -13,7 +13,7 @@ The initial MALA-GPR project focuses on creating ArcGIS shapefiles (maybe file g
       rgdal
       rgeos
       shapefiles
-      sp<
+      sp
       ....at least the ones I know of..there may be others
       
 
