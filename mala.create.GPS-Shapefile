@@ -7,6 +7,7 @@
 #install.packages(c("rgdal", "sp"))
 library(rgdal)
 library(sp)
+library(maptools)  #to utilize rgeos gUnion command later
 
 ##Set your parent (upper level) GPR directory
 ###### Eventually, this setting should be the only one needed due to a loop to create all the shapefiles
@@ -21,6 +22,7 @@ fileList <- dir(pattern=".cor", recursive = TRUE, include.dirs=TRUE)
   #head(fileList)  ##shows the first few rows of the dataframe
   #fileList[12]  ##brings out element 12 in the file list
 fileCount <- NROW(fileList)  #how many files will need to be processed, use as counter
+startTime <- format(Sys.time(), format="%Y%m%d%H%M%S")
 
 ## Begin Loop for each COR file
 ##
@@ -54,4 +56,16 @@ corData$longitude <- corData$longitude * -1
 coordinates(corData)<-~longitude+latitude
 class(corData)  #check to see that indeed a spatial file was produced
 writeOGR(corData, mala.cor.path, mala.cor.shapefile, driver = "ESRI Shapefile")
+
+#making a large shapefile of all processed data
+if (i=1) {
+primaryShapefile <- paste("ptGPR_",startTime, sep="", collapse=NULL)
+writeOGR(corData, getwd(), primaryShapefile, driver = "ESRI Shapefile")
 }
+if (i > 1 {
+#Union the current mala.cor.path, mala.cor.shapefile to the ptGPR_shapefile
+#check for library(devtools) install_git from taRifx.geo.git and library(taRifx.geo)
+}
+
+
+}  #end of script
