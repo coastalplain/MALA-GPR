@@ -20,8 +20,15 @@ fileList <- dir(pattern=".cor", recursive = TRUE, include.dirs=TRUE)
   #summary(fileList)  ##shows the Length Class and Mode of the dataframe
   #head(fileList)  ##shows the first few rows of the dataframe
   #fileList[12]  ##brings out element 12 in the file list
+fileCount <- NROW(fileList)  #how many files will need to be processed, use as counter
 
-mala.cor.working <- fileList[13]  #full path and filename 
+## Begin Loop for each COR file
+##
+
+for (i in 1:length(fileList)) {
+
+fileList[i]
+mala.cor.working <- fileList[i]  #full path and filename 
 mala.cor.filename <- basename(mala.cor.working)  #filename only
 mala.cor.path <- dirname(mala.cor.working)  #directory only
 mala.cor.fullpath <- paste(getwd(),"/",mala.cor.path,"/", sep="", collapse=NULL)
@@ -47,3 +54,4 @@ corData$longitude <- corData$longitude * -1
 coordinates(corData)<-~longitude+latitude
 class(corData)  #check to see that indeed a spatial file was produced
 writeOGR(corData, mala.cor.path, mala.cor.shapefile, driver = "ESRI Shapefile")
+}
