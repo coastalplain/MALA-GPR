@@ -43,7 +43,8 @@ class(corData)  #just shows that the data are in a data.frame
 ##Add the header information
 corData$filepath <- mala.cor.fullpath
 corData$filename <- mala.cor.filename
-names(corData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","lon-EW","elevation","M","GPS-dop","filepath","filename")
+corData$fileID <- paste(corData[1:1,c("V2")],"_",mala.cor.filename, sep="")
+names(corData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","lon-EW","elevation","M","GPS-dop","filepath","filename","fileID")
 
 ##Multiply the Longitude Column by -1 to get into correct hemisphere
 corData$longitude <- corData$longitude * -1
