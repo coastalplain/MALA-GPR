@@ -2,7 +2,7 @@
 #parent.folder = "Z:/BigProjectData/GPR_Data/20080802_MtPleasant_MSH" 
 parent.folder = "G:/Data/GPR/20080804_JamesIs_MSH/250mHz"
 
-Setwd(parent.folder)
+setwd(parent.folder)
 
 ##http://stackoverflow.com/questions/30127293/how-to-convert-csv-to-shp-in-r
 ##This code was pulled from @iembry off the above weblink and modified
