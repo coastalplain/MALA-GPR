@@ -28,7 +28,8 @@ The initial MALA-GPR project focuses on creating ArcGIS shapefiles (maybe file g
 2. Extract good elevation data from GeoTIFF
     a.  pull the latitude,longitude pairs from the corData (if using R only) or the shapefile (if in ArcGIS py)
     b.  convert the WGS-1984 projection to the projection of the dataset (set variable at top of file)
-    c.  extract the Z and convert to meters if necessary from the point intersect with the GeoTIFF
+    c.  extract the Z and convert to meters if necessary from the point intersect with the GeoTIFF 
+    c2. despike the profile to eliminate errors (smooth?)
     d.  replace the Z value in the corData dataframe
     e.  copy the original .cor file to .cor.old
     f.  export the columns from the corData to the new-and-improved DAT_nnnn.cor (in the right directory)
