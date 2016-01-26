@@ -11,7 +11,7 @@ library(maptools)  #to utilize rgeos gUnion command later
 
 ##Set your parent (upper level) GPR directory
 ##parent.folder = "//cainhoy/data/BigProjectData/GPR_Data/_Process01"  #example if you use a network share
-parent.folder = "I:/MALAGS_Jan2016_CoastalPlain"
+parent.folder = "I:\MALAGS_Jan2016_CoastalPlain_Group2"
 setwd(parent.folder)
 
 ##Obtain the list of all COR files in the directories and sub-directories
