@@ -1,0 +1,2 @@
+to.read = file("O:/ScottDropbox/Dropbox/Data/GPR/MALAGS_IOP_AltamahaRiver/DAT_0001_A1.rd3", "rb")
+readBin(to.read, integer(), n=10, endian = "little")
