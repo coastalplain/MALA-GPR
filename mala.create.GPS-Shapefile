@@ -3,17 +3,27 @@
 ## Currently, it is being tested on a 32-bit Windows installation
 ## M. Scott Harris, Ph.D.  ScottHarris2007-gmail
 ##
+#INSTALL PACKAGES NOT YET INSTALLED
+#FROM:  http://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them
+   list.of.packages <- c("rgdal", "sp", "maptools", "rgeos", "tcltk", "stringi", "stringr")
+   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+   if(length(new.packages)) install.packages(new.packages)
 
-#install.packages(c("rgdal", "sp"))
+#LOAD LIBRARIES
 library(rgdal)
 library(sp)
-library(maptools)  #to utilize rgeos gUnion command later
+library(maptools)
+library(rgeos)
+library(tcltk)
+library(stringi)
+library(stringr)
 
 ##Set your parent (upper level) GPR directory
-## NOTICE slash orientation....
-##parent.folder = "//cainhoy/data/BigProjectData/GPR_Data/_Process01"  #example if you use a network share
-parent.folder = "I:/MALAGS_Jan2016_CoastalPlain_Group2"
+parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
 setwd(parent.folder)
+
+##Set your final Point Shapefile Destination Folder
+final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
 
 ##Obtain the list of all COR files in the directories and sub-directories
 ##  in preparation for the loop to create all shapefiles from the COR files
@@ -40,7 +50,7 @@ mala.cor.working <- fileList[i]  #full path and filename
 mala.cor.filename <- basename(mala.cor.working)  #filename only
 mala.cor.path <- dirname(mala.cor.working)  #directory only
 mala.cor.fullpath <- paste(getwd(),"/",mala.cor.path,"/", sep="", collapse=NULL)
-mala.cor.shapefile <- paste("pt_",mala.cor.filename, sep="", collapse=NULL)
+mala.cor.shapefile <- paste("MALA_pt_",mala.cor.filename, sep="", collapse=NULL)
 
 ##http://stackoverflow.com/questions/30127293/how-to-convert-csv-to-shp-in-r
 ##some code was pulled from @iembry off the above weblink and modified
