@@ -23,7 +23,7 @@ parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
 setwd(parent.folder)
 
 ##Set your final Point Shapefile Destination Folder
-final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
+final.folder <- choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
 
 ##Obtain the list of all COR files in the directories and sub-directories
 ##  in preparation for the loop to create all shapefiles from the COR files
