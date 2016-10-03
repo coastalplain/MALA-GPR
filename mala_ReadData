@@ -1,2 +1,9 @@
-to.read = file("O:/ScottDropbox/Dropbox/Data/GPR/MALAGS_IOP_AltamahaRiver/DAT_0001_A1.rd3", "rb")
-readBin(to.read, integer(), n=10, endian = "little")
+
+
+#MALA RAMAC GPR .rd3 files are 16-bit (2 byte), little endian, integer
+# .rad contains the text header information.
+# THIS FILE:  1024 samples and 20496 traces
+
+to.read.rd3 = file("O:/ScottDropbox/Dropbox/Data/GPR/MALAGS_IOP_AltamahaRiver/DAT_0001_A1.rd3", "rb")
+readBin(to.read.rd3, integer(), n=10240, size=2, endian = "little")
+
