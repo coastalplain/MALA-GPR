@@ -86,7 +86,7 @@ writeOGR(corData, mala.cor.path, mala.cor.shapefile, driver = "ESRI Shapefile")
 
 coordinates(corDataAll)<-~longitude+latitude
 class(corDataAll)
-mala.cor.shapefile.all <- paste("ptGPRall_",startTime, sep="", collapse=NULL)
+mala.cor.shapefile.all <- paste("ptMALAall_",startTime, sep="", collapse=NULL)
 writeOGR(corDataAll, getwd(), mala.cor.shapefile.all, driver = "ESRI Shapefile")
 
 #end of R script
