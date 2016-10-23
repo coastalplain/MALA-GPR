@@ -3,6 +3,10 @@
 ## Currently, it is being tested on a 32-bit Windows installation
 ## M. Scott Harris, Ph.D.  ScottHarris2007-gmail
 ##
+
+##REMOVE ALL EXISTING OBJECTS -- MAY WANT TO COMMENT OUT
+rm(list=ls(all=TRUE))
+
 #INSTALL PACKAGES NOT YET INSTALLED
 #FROM:  http://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them
    list.of.packages <- c("rgdal", "sp", "maptools", "rgeos", "tcltk", "stringi", "stringr")
@@ -20,6 +24,7 @@ library(stringr)
 
 ##Set your parent (upper level) GPR directory
 parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
+#parent.folder <- "Y:/___CAINHOY_FOLDERS/Data/BigProjectData/CapersInlet_NGDC/EDMAP_2009/GPR/AllProcessed"
 setwd(parent.folder)
 
 ##Set your final Point Shapefile Destination Folder
@@ -42,6 +47,8 @@ for (i in 1:length(fileList.full)) {
 if (file.info(fileList.full[i])$size >0)
 fileList <- c(fileList, fileList.full[i])
 }
+
+### ADD OTHER FILTERS HERE
 
 ## Begin Loop for each COR file
 
@@ -66,8 +73,16 @@ corData$filename <- mala.cor.filename
 corData$fileID <- paste(corData[1:1,c("V2")],"_",mala.cor.filename, sep="")
 names(corData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","lon-EW","elevation","M","GPS-dop","filepath","filename","fileID")
 
+#REMOVE BAD LINES
+     # for GSSI input:   names(corData) <- c("latitude","longitude","Zmeters","ShotPoint")
+     #corData <- corData[!corData$latitude == "0", ] # make sure latitude is not zero
+     #corData <- corData[!corData$longitude == "0", ] # make sure longitude is not zero
+     corData <- corData[!corData$shotpoint == "Shot", ]
+     
 ##Multiply the Longitude Column by -1 to get into correct hemisphere
-corData$longitude <- corData$longitude * -1
+      corData$longitude <- as.numeric(corData$longitude) * -1
+      corData$latitude <- as.numeric(corData$latitude) * 1
+      #$new$MY_NEW_COLUMN <-as.numeric(as.character(new[,2])) * 5
 
 ##making a large dataframe of all processed data, then convert to a shapefile
 
@@ -79,9 +94,10 @@ corDataAll <- rbind(corDataAll, corData)
 }
 
 ##create a spatial class and export to a shapefile
-coordinates(corData)<-~longitude+latitude
-class(corData)  #check to see that indeed a spatial file was produced
-writeOGR(corData, mala.cor.path, mala.cor.shapefile, driver = "ESRI Shapefile")
+#coordinates(corData)<-~longitude+latitude
+#class(corData)  #check to see that indeed a spatial file was produced
+#writeOGR(corData, mala.cor.path, mala.cor.shapefile, driver = "ESRI Shapefile")
+
 }  #end of for loop
 
 ##Write out the final Shapefile with all files processed
@@ -89,6 +105,7 @@ writeOGR(corData, mala.cor.path, mala.cor.shapefile, driver = "ESRI Shapefile")
 coordinates(corDataAll)<-~longitude+latitude
 class(corDataAll)
 mala.cor.shapefile.all <- paste("ptMALAall_",startTime, sep="", collapse=NULL)
+setwd(final.folder)
 writeOGR(corDataAll, getwd(), mala.cor.shapefile.all, driver = "ESRI Shapefile")
 
 #COPY WGS 1984 projection file from final.folder (hard wired into code)
