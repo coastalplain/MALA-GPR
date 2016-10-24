@@ -27,6 +27,8 @@ testdf <- vector()
 cleanFileList <- vector()
 rejectFileList <- vector()
 fileList <- vector()
+fileList2 <- vector()
+fileList3 <- vector()
 cleanFileList <- vector()
 cleanFileList2 <- vector()
 corDataAll <- vector()
@@ -50,14 +52,13 @@ fileList.fourColumns <- vector()
        #fileList[12]  ##brings out element 12 in the file list
   fileCount <- NROW(fileList.full)  #how many files will need to be processed, use as counter
   startTime <- format(Sys.time(), format="%Y%m%d%H%M%S")
-  fileList <- vector()
 
 ##Filter out files that have 0 size (aka no GPS coords) file.info(fileList[i])$size = 0
 if(length(fileList.full) > 0) {
    for (i in 1:length(fileList.full)) 
     {
     if (file.info(fileList.full[i])$size >0)
-    fileList <- c(fileList, fileList.full[i])
+    fileList2 <- c(fileList2, fileList.full[i])
     }
 } else { 
 print("NO FILES FOUND")
@@ -65,7 +66,38 @@ stopifnot(length(fileList)>0)
 }
 
 ### ADD OTHER FILTERS HERE
-
+   for (i in 1:length(fileList2)) 
+    {
+    fileData.testing <- vector()
+    fileName.testing <- c()
+    fileListJUNK <- c()
+    fileName.testing <- paste(parent.folder,"/", fileList[i],sep="")
+    #TRY TO INSERT TRYCATCH HERE
+    tryCatch(
+       {
+       message("Try to read the file")
+       read.csv(file=filename.testing, sep="\t", skipNul = TRUE)
+       },
+       error={
+       message("Error with file")
+       message(i)
+       return(NA)
+       },
+       warning={
+       message("Warning with file")
+       message(i)
+       return(NULL)
+       },
+       finally={
+       return()
+       }
+       )
+    if (ncol(read.csv(file = fileName.testing, sep="\t", skipNul = TRUE)) == 10) 
+      #fileList <- c(fileList, fileList2[i])
+    fileListJUNK <- c(fileList, fileList2[i])
+    }
+    
+    
 ## Begin Loop for each COR file
 if(length(fileList) > 0) {
    for (i in 1:length(fileList)) 
