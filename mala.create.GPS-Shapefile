@@ -35,19 +35,21 @@ corDataAll <- vector()
 fileList.fourColumns <- vector()
 
 ##Set your parent (upper level) GPR directory
-  parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
+#  parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
+parent.folder <- "O:"
 #parent.folder <- "Y:/___CAINHOY_FOLDERS/Data/BigProjectData/CapersInlet_NGDC/EDMAP_2009/GPR/AllProcessed"
   setwd(parent.folder)
 
 ##Set your final Point Shapefile Destination Folder
 #final.folder <- choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
-  final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
-
+#final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
+final.folder <- "O:/ScottDropbox/Dropbox/Data/GPR"
 
 ##Obtain the list of all COR files in the directories and sub-directories
 ##  in preparation for the loop to create all shapefiles from the COR files
   startTime <- format(Sys.time(), format="%Y%m%d%H%M%S")
   fileList.full <- dir(pattern=".cor$", recursive = TRUE, include.dirs=TRUE)
+  fileList.full <- c(fileList.full, dir(pattern=".COR$", recursive = TRUE, include.dirs=TRUE))
        #summary(fileList)  ##shows the Length Class and Mode of the dataframe
        #head(fileList)  ##shows the first few rows of the dataframe
        #fileList[12]  ##brings out element 12 in the file list
@@ -81,11 +83,11 @@ if(length(fileList.full) > 0) {
           #if any of these statements fail, 
           #    including the if statements, read.csv, or count.fields, 
           #    the fileList2[i] in for{} is not added to fileList3
-          if (file.size(fileName.testing) > 0) {
-          read.csv(fileName.testing, header = F, sep=",")
-          read.csv(fileName.testing, header = F, sep="\t")
-          ncols <- max(count.fields(fileName.testing))
-          if (ncols == 10) (fileList3 <- c(fileList3, fileList2[i])) 
+          if (file.info(fileName.testing)$size > 0) {
+            read.csv(fileName.testing, header = F, sep=",")
+            read.csv(fileName.testing, header = F, sep="\t")
+            ncols <- max(count.fields(fileName.testing))
+            if (ncols == 10) (fileList3 <- c(fileList3, fileList2[i])) 
            }
         }, error = function(err) {
             # error handler picks up where error was generated
