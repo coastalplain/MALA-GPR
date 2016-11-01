@@ -155,5 +155,7 @@ if(length(fileList3) > 0) {
 } else {
 print("No Files Found")
 }
+print(paste("The starting point: ", parent.folder))
+print(paste("Name of Shapefile if created: ", mala.cor.shapefile.all))
 #end of R script
 
