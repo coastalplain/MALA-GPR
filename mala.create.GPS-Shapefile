@@ -72,23 +72,27 @@ if(length(fileList.full) > 0) {
      fileName.testing <- c()
      fileList3 <- c()
      
-#TryCatch to check if there is an error reading one of the files
-  for (i in 1:length(fileList2)) {
+   ##########
+   #TryCatch to check if there is an error reading one of the files
+   for (i in 1:length(fileList2)) {
      fileName.testing <- paste(parent.folder,"/", fileList2[i],sep="")
      print(paste("FILE: ", fileName.testing))
      data <- tryCatch({
+          #if any of these statements fail, 
+          #    including the if statements, read.csv, or count.fields, 
+          #    the fileList2[i] in for{} is not added to fileList3
           if (file.size(fileName.testing) > 0) {
           read.csv(fileName.testing, header = F, sep=",")
           read.csv(fileName.testing, header = F, sep="\t")
           ncols <- max(count.fields(fileName.testing))
-          if (ncols == 10) (fileList3 <- c(fileList3, fileList2[i]))
+          if (ncols == 10) (fileList3 <- c(fileList3, fileList2[i])) 
            }
         }, error = function(err) {
             # error handler picks up where error was generated
             print(paste("Read.table didn't work!:  ",err))
         })
    } 
-    
+   ##########    
 ## Begin Loop for each COR file
 if(length(fileList3) > 0) {
    for (i in 1:length(fileList3)) 
