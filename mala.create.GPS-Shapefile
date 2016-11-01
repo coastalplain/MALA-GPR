@@ -75,11 +75,13 @@ if(length(fileList.full) > 0) {
 #TryCatch to check if there is an error reading one of the files
   for (i in 1:length(fileList2)) {
      fileName.testing <- paste(parent.folder,"/", fileList2[i],sep="")
+     print(paste("FILE: ", fileName.testing))
      data <- tryCatch({
-        if (file.size(fileName.testing) > 0){
-        read.table(fileName.testing, header = F, sep=",")
-        #print(paste("NAME: ",fileName.testing))
-        fileList3 <- c(fileList3, fileList2[i])
+          if (file.size(fileName.testing) > 0) {
+          read.csv(fileName.testing, header = F, sep=",")
+          read.csv(fileName.testing, header = F, sep="\t")
+          ncols <- max(count.fields(fileName.testing))
+          if (ncols == 10) (fileList3 <- c(fileList3, fileList2[i]))
            }
         }, error = function(err) {
             # error handler picks up where error was generated
@@ -112,7 +114,6 @@ if(length(fileList3) > 0) {
      names(corData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","lon-EW","elevation","M","GPS-dop","filepath","filename","fileID")
 
      #REMOVE BAD LINES
-     # for GSSI input:   names(corData) <- c("latitude","longitude","Zmeters","ShotPoint")
      corData <- corData[!corData$latitude == "0", ] # make sure latitude is not zero
      corData <- corData[!corData$longitude == "0", ] # make sure longitude is not zero
      corData <- corData[!corData$shotpoint == "Shot", ]
