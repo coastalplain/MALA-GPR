@@ -46,12 +46,13 @@ fileList.fourColumns <- vector()
 
 ##Obtain the list of all COR files in the directories and sub-directories
 ##  in preparation for the loop to create all shapefiles from the COR files
+  startTime <- format(Sys.time(), format="%Y%m%d%H%M%S")
   fileList.full <- dir(pattern=".cor$", recursive = TRUE, include.dirs=TRUE)
        #summary(fileList)  ##shows the Length Class and Mode of the dataframe
        #head(fileList)  ##shows the first few rows of the dataframe
        #fileList[12]  ##brings out element 12 in the file list
   fileCount <- NROW(fileList.full)  #how many files will need to be processed, use as counter
-  startTime <- format(Sys.time(), format="%Y%m%d%H%M%S")
+
 
 ##Filter out files that have 0 size (aka no GPS coords) file.info(fileList[i])$size = 0
 if(length(fileList.full) > 0) {
@@ -60,32 +61,38 @@ if(length(fileList.full) > 0) {
     if (file.info(fileList.full[i])$size >0)
     fileList2 <- c(fileList2, fileList.full[i])
     }
-} else { 
-print("NO FILES FOUND")
-stopifnot(length(fileList)>0)
-}
+} 
+#else { 
+#print("NO FILES FOUND")
+#stopifnot(length(fileList)=0)
+#}
 
 ### ADD OTHER FILTERS HERE
-   for (i in 1:length(fileList2)) 
-    {
-    fileData.testing <- vector()
-    fileName.testing <- c()
-    fileListJUNK <- c()
-    fileName.testing <- paste(parent.folder,"/", fileList[i],sep="")
-    #TRY TO INSERT TRYCATCH HERE
-       read.csv(file=filename.testing, sep="\t", skipNul = TRUE)
-    if (ncol(read.csv(file = fileName.testing, sep="\t", skipNul = TRUE)) == 10) 
-      #fileList <- c(fileList, fileList2[i])
-    fileListJUNK <- c(fileList, fileList2[i])
-    }
-    
+     fileData.testing <- vector()
+     fileName.testing <- c()
+     fileList3 <- c()
+     
+#TryCatch to check if there is an error reading one of the files
+  for (i in 1:length(fileList2)) {
+     fileName.testing <- paste(parent.folder,"/", fileList2[i],sep="")
+     data <- tryCatch({
+        if (file.size(fileName.testing) > 0){
+        read.table(fileName.testing, header = F, sep=",")
+        #print(paste("NAME: ",fileName.testing))
+        fileList3 <- c(fileList3, fileList2[i])
+           }
+        }, error = function(err) {
+            # error handler picks up where error was generated
+            print(paste("Read.table didn't work!:  ",err))
+        })
+   } 
     
 ## Begin Loop for each COR file
-if(length(fileList) > 0) {
-   for (i in 1:length(fileList)) 
+if(length(fileList3) > 0) {
+   for (i in 1:length(fileList3)) 
      {
-     print(fileList[i])
-     mala.cor.working <- fileList[i]  #full path and filename 
+     print(fileList3[i])
+     mala.cor.working <- fileList3[i]  #full path and filename 
      mala.cor.filename <- basename(mala.cor.working)  #filename only
      mala.cor.path <- dirname(mala.cor.working)  #directory only
      mala.cor.fullpath <- paste(getwd(),"/",mala.cor.path,"/", sep="", collapse=NULL)
