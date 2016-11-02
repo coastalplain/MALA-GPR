@@ -35,8 +35,8 @@ corDataAll <- vector()
 fileList.fourColumns <- vector()
 
 ##Set your parent (upper level) GPR directory
-#  parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
-parent.folder <- "O:"
+parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
+#parent.folder <- "O:"
 #parent.folder <- "Y:/___CAINHOY_FOLDERS/Data/BigProjectData/CapersInlet_NGDC/EDMAP_2009/GPR/AllProcessed"
   setwd(parent.folder)
 
