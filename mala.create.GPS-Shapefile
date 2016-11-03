@@ -42,8 +42,8 @@ parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
 
 ##Set your final Point Shapefile Destination Folder
 #final.folder <- choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
-#final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
-final.folder <- "O:/ScottDropbox/Dropbox/Data/GPR"
+final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
+#final.folder <- "O:/ScottDropbox/Dropbox/Data/GPR"
 
 ##Obtain the list of all COR files in the directories and sub-directories
 ##  in preparation for the loop to create all shapefiles from the COR files
@@ -107,7 +107,7 @@ if(length(fileList3) > 0) {
      mala.cor.shapefile <- paste("MALA_pt_",mala.cor.filename, sep="", collapse=NULL)
 
      ##http://stackoverflow.com/questions/30127293/how-to-convert-csv-to-shp-in-r
-     ##some code was pulled from @iembry off the above weblink and modified
+     ##some code from @iembry off the above link and modified
 
      #READ IN THE DATA
      corData <- read.table(file=mala.cor.working, header=FALSE,sep="\t")
@@ -120,11 +120,12 @@ if(length(fileList3) > 0) {
      names(corData) <- c("shotpoint","date","time","latitude","lat-NS","longitude","lon-EW","elevation","M","GPS-dop","filepath","filename","fileID")
 
      #REMOVE BAD LINES
+     corData <- corData[!(is.na(corData$latitude)) | !(is.na(corData$longitude)),] #checks for NA in $latitude or $longitude
      corData <- corData[!corData$latitude == "0", ] # make sure latitude is not zero
      corData <- corData[!corData$longitude == "0", ] # make sure longitude is not zero
      corData <- corData[!corData$shotpoint == "Shot", ]
-     
-     ##Multiply the Longitude Column by -1 to get into correct hemisphere
+
+##Multiply the Longitude Column by -1 to get into correct hemisphere
      corData$longitude <- as.numeric(corData$longitude) * -1
      corData$latitude <- as.numeric(corData$latitude) * 1
 
