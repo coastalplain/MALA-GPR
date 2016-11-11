@@ -35,8 +35,8 @@ corDataAll <- vector()
 fileList.fourColumns <- vector()
 
 ##Set your parent (upper level) GPR directory
-parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
-#parent.folder <- "O:"
+#parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
+parent.folder <- "T:/"
 #parent.folder <- "Y:/___CAINHOY_FOLDERS/Data/BigProjectData/CapersInlet_NGDC/EDMAP_2009/GPR/AllProcessed"
   setwd(parent.folder)
 
@@ -160,5 +160,7 @@ print("No Files Found")
 }
 print(paste("The starting point: ", parent.folder))
 print(paste("Name of Shapefile if created: ", mala.cor.shapefile.all))
-#end of R script
+print(paste("End of MALA Run"))
+
+
 
