@@ -9,6 +9,7 @@ rm(list=ls(all=TRUE))
 
 #INSTALL PACKAGES NOT YET INSTALLED
 #FROM:  http://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them
+
    list.of.packages <- c("rgdal", "sp", "maptools", "rgeos", "tcltk", "stringi", "stringr")
    new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
    if(length(new.packages)) install.packages(new.packages)
@@ -33,20 +34,23 @@ cleanFileList <- vector()
 cleanFileList2 <- vector()
 corDataAll <- vector()
 fileList.fourColumns <- vector()
+mala.cor.shapefile <- paste("No shapefile created")
+exportPath <- vector()
 
 ##Set your parent (upper level) GPR directory
-#parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
-parent.folder <- "T:/"
-#parent.folder <- "Y:/___CAINHOY_FOLDERS/Data/BigProjectData/CapersInlet_NGDC/EDMAP_2009/GPR/AllProcessed"
+  #parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
+  parent.folder <- "N:/"
+  #parent.folder <- "Y:/___CAINHOY_FOLDERS/Data/BigProjectData/CapersInlet_NGDC/EDMAP_2009/GPR/AllProcessed"
+ 
   setwd(parent.folder)
 
 ##Set your final Point Shapefile Destination Folder
-#final.folder <- choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
-final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
-#final.folder <- "O:/ScottDropbox/Dropbox/Data/GPR"
+  #final.folder <- choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
+  final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder for the corDataAll shapefile")
+  #final.folder <- "O:/ScottDropbox/Dropbox/Data/GPR"
 
-##Obtain the list of all COR files in the directories and sub-directories
-##  in preparation for the loop to create all shapefiles from the COR files
+##GET LIST OF COR FILES
+
   startTime <- format(Sys.time(), format="%Y%m%d%H%M%S")
   fileList.full <- dir(pattern=".cor$", recursive = TRUE, include.dirs=TRUE)
   fileList.full <- c(fileList.full, dir(pattern=".COR$", recursive = TRUE, include.dirs=TRUE))
@@ -56,44 +60,49 @@ final.folder <- "K:/Dropbox/Data/GPR" #choose.dir(getwd(), "FINAL Output Folder 
   fileCount <- NROW(fileList.full)  #how many files will need to be processed, use as counter
 
 
-##Filter out files that have 0 size (aka no GPS coords) file.info(fileList[i])$size = 0
-if(length(fileList.full) > 0) {
+##FILTER OUT FILES WITH 0 SIZE
+ if(length(fileList.full) > 0) {
    for (i in 1:length(fileList.full)) 
     {
-    if (file.info(fileList.full[i])$size >0)
+    if (file.info(fileList.full[i])$size >0) {
     fileList2 <- c(fileList2, fileList.full[i])
+    } else { 
+      rejectFileList <- c(rejectFileList, fileList.full[i])
     }
-    else {
-    rejectFileList <- c(rejectFileList, fileList.full[i])
-} 
+    }
+ } 
 
-### ADD OTHER FILTERS HERE
+##ADD OTHER FILTERS HERE
      fileData.testing <- vector()
      fileName.testing <- c()
      fileList3 <- c()
      
    ##########
    #TryCatch to check if there is an error reading one of the files
-   for (i in 1:length(fileList2)) {
+   for (i in 1:length(fileList2)) 
+   {
+     i
      fileName.testing <- paste(parent.folder,"/", fileList2[i],sep="")
      print(paste("FILE: ", fileName.testing))
-     data <- tryCatch({
-          #if any of these statements fail, 
-          #    including the if statements, read.csv, or count.fields, 
-          #    the fileList2[i] in for{} is not added to fileList3
-          if (file.info(fileName.testing)$size > 0) {
-            read.csv(fileName.testing, header = F, sep=",")
-            read.csv(fileName.testing, header = F, sep="\t")
-            ncols <- max(count.fields(fileName.testing))
-            if (ncols == 10) (fileList3 <- c(fileList3, fileList2[i])) 
+     data <- tryCatch(
+         {
+           if (file.info(fileName.testing)$size > 0) 
+           {
+              read.csv(fileName.testing, header = F, sep=",")
+              read.csv(fileName.testing, header = F, sep="\t")
+              ncols <- max(count.fields(fileName.testing))
+              if (ncols == 10) (fileList3 <- c(fileList3, fileList2[i])) 
+            }
+           }, error = function(err) 
+           {
+              # error handler picks up where error was generated
+              print(paste("Read.table didn't work!:  ",err))
+              rejectFileList <- c(rejectFileList <- c(rejectFileList, fileList2[i]))
+              rejectFileList
            }
-        }, error = function(err) {
-            # error handler picks up where error was generated
-            print(paste("Read.table didn't work!:  ",err))
-            rejectFileList <- c(rejectFileList <- c(rejectFileList, fileList2[i])
-        })
-   } 
-   ##########    
+        ) #end tryCatch
+   } #end for length fileList2
+
 ## Begin Loop for each COR file
 if(length(fileList3) > 0) {
    for (i in 1:length(fileList3)) 
@@ -112,7 +121,7 @@ if(length(fileList3) > 0) {
      corData <- read.table(file=mala.cor.working, header=FALSE,sep="\t")
      class(corData)  #just shows that the data are in a data.frame
 
-     ##Add the header information
+     ##ADD HEADER INFORMATION
      corData$filepath <- mala.cor.fullpath
      corData$filename <- mala.cor.filename
      corData$fileID <- paste(corData[1:1,c("V2")],"_",mala.cor.filename, sep="")
@@ -124,7 +133,7 @@ if(length(fileList3) > 0) {
      corData <- corData[!corData$longitude == "0", ] # make sure longitude is not zero
      corData <- corData[!corData$shotpoint == "Shot", ]
 
-##Multiply the Longitude Column by -1 to get into correct hemisphere
+  ##Multiply the Longitude Column by -1 to get into correct hemisphere
      corData$longitude <- as.numeric(corData$longitude) * -1
      corData$latitude <- as.numeric(corData$latitude) * 1
 
@@ -160,7 +169,14 @@ print("No Files Found")
 print(paste("The starting point: ", parent.folder))
 print(paste("Name of Shapefile if created: ", mala.cor.shapefile.all))
 print(paste("End of MALA Run"))
-rejectFileList #<- c(rejectFileList <- c(rejectFileList, fileList2[i])
 
-
+#Export the rejected file list so MALA file locations can be documented, even without the location data
+if(length(rejectFileList) > 0) {
+   for (i in 1:length(rejectFileList)) 
+     {
+     exportPath[i] <- paste(parent.folder,rejectFileList[i], sep="")
+     }
+  }
+rejectFileName <- paste(final.folder,"/","ptMALAall_",startTime,"_Rejects.csv",sep="")
+write.table(exportPath, file=rejectFileName,col.names = FALSE)
 
