@@ -35,11 +35,12 @@ cleanFileList2 <- vector()
 corDataAll <- vector()
 fileList.fourColumns <- vector()
 mala.cor.shapefile <- paste("No shapefile created")
+mala.cor.shapefile.all <- paste("No shapefile.all created")
 exportPath <- vector()
 
 ##Set your parent (upper level) GPR directory
   #parent.folder <- choose.dir(getwd(), "Choose Starting Point for Search")
-  parent.folder <- "N:/"
+  parent.folder <- "O:/"
   #parent.folder <- "Y:/___CAINHOY_FOLDERS/Data/BigProjectData/CapersInlet_NGDC/EDMAP_2009/GPR/AllProcessed"
  
   setwd(parent.folder)
